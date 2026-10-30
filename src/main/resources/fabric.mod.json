@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "better-wood-chests",
+  "version": "${version}",
+  "name": "Better Wood Chests",
+  "description": "Craftable chests for every wood type, found in matching structures.",
+  "authors": ["zinki-coder"],
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["betterwoodchests.modid.BetterWoodChests"]
+  },
+  "depends": {
+    "fabricloader": ">=0.20.1",
+    "minecraft": "~26.1",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
+}
