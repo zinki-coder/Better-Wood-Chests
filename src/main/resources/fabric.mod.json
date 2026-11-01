@@ -4,11 +4,18 @@
   "version": "${version}",
   "name": "Better Wood Chests",
   "description": "Craftable chests for every wood type, found in matching structures.",
-  "authors": ["zinki-coder"],
+  "authors": [
+    "zinki-coder"
+  ],
   "license": "MIT",
   "environment": "*",
   "entrypoints": {
-    "main": ["betterwoodchests.modid.BetterWoodChests"]
+    "main": [
+      "betterwoodchests.modid.BetterWoodChests"
+    ],
+    "client": [
+      "betterwoodchests.modid.client.BetterWoodChestsClient"
+    ]
   },
   "depends": {
     "fabricloader": ">=0.20.1",
