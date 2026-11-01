@@ -1,0 +1,10 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "better-wood-chests:item/pale_oak_chest",
+    "model": {
+      "type": "minecraft:chest",
+      "texture": "better-wood-chests:pale_oak"
+    }
+  }
+}
