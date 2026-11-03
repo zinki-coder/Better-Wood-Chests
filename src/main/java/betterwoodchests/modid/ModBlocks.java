@@ -35,7 +35,7 @@ public class ModBlocks {
                 .sound(SoundType.WOOD)
                 .setId(ResourceKey.create(Registries.BLOCK, id));
             Block block = Registry.register(BuiltInRegistries.BLOCK, id,
-                new ChestBlock(() -> ModBlockEntities.WOOD_CHEST,
+                new WoodChestBlock(() -> ModBlockEntities.WOOD_CHEST,
                     SoundEvents.CHEST_OPEN, SoundEvents.CHEST_CLOSE, props));
             Item item = Registry.register(BuiltInRegistries.ITEM, id,
                 new BlockItem(block, new Item.Properties()

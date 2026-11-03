@@ -5,20 +5,20 @@ MOD = "better-wood-chests"
 ROOT = "src/main/resources"
 
 # ============ HIER ANPASSEN ============
-# id, English, Deutsch, Planken-Item, Farbe (R, G, B)
+# id, English, Deutsch, Planken-Item (Farbe und Struktur kommen von den Brettern)
 WOODS = [
-    ("oak",       "Oak Chest",        "Eichentruhe",        "oak_planks",       (162, 130, 78)),
-    ("spruce",    "Spruce Chest",     "Fichtentruhe",       "spruce_planks",    (114, 84, 48)),
-    ("birch",     "Birch Chest",      "Birkentruhe",        "birch_planks",     (216, 203, 155)),
-    ("jungle",    "Jungle Chest",     "Tropenholztruhe",    "jungle_planks",    (160, 115, 80)),
-    ("acacia",    "Acacia Chest",     "Akazientruhe",       "acacia_planks",    (186, 99, 54)),
-    ("dark_oak",  "Dark Oak Chest",   "Schwarzeichentruhe", "dark_oak_planks",  (66, 43, 20)),
-    ("mangrove",  "Mangrove Chest",   "Mangrovenholztruhe", "mangrove_planks",  (117, 54, 48)),
-    ("cherry",    "Cherry Chest",     "Kirschholztruhe",    "cherry_planks",    (226, 178, 172)),
-    ("pale_oak",  "Pale Oak Chest",   "Blasseichentruhe",   "pale_oak_planks",  (228, 218, 212)),
-    ("bamboo",    "Bamboo Chest",     "Bambustruhe",        "bamboo_planks",    (193, 173, 80)),
-    ("crimson",   "Crimson Chest",    "Karmesintruhe",      "crimson_planks",   (126, 58, 86)),
-    ("warped",    "Warped Chest",     "Wirrtruhe",          "warped_planks",    (52, 122, 116)),
+    ("oak",       "Oak Chest",        "Eichentruhe",        "oak_planks"),
+    ("spruce",    "Spruce Chest",     "Fichtentruhe",       "spruce_planks"),
+    ("birch",     "Birch Chest",      "Birkentruhe",        "birch_planks"),
+    ("jungle",    "Jungle Chest",     "Tropenholztruhe",    "jungle_planks"),
+    ("acacia",    "Acacia Chest",     "Akazientruhe",       "acacia_planks"),
+    ("dark_oak",  "Dark Oak Chest",   "Schwarzeichentruhe", "dark_oak_planks"),
+    ("mangrove",  "Mangrove Chest",   "Mangrovenholztruhe", "mangrove_planks"),
+    ("cherry",    "Cherry Chest",     "Kirschholztruhe",    "cherry_planks"),
+    ("pale_oak",  "Pale Oak Chest",   "Blasseichentruhe",   "pale_oak_planks"),
+    ("bamboo",    "Bamboo Chest",     "Bambustruhe",        "bamboo_planks"),
+    ("crimson",   "Crimson Chest",    "Karmesintruhe",      "crimson_planks"),
+    ("warped",    "Warped Chest",     "Wirrtruhe",          "warped_planks"),
 ]
 # =======================================
 
@@ -34,17 +34,22 @@ def find_jar():
             return j
     sys.exit("Minecraft-Jar nicht gefunden")
 
-def recolor(img, target):
+import bisect
+
+def lum(c):
+    return 0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]
+
+def planks_palette(planks):
+    img = Image.open(io.BytesIO(zf.read(f"assets/minecraft/textures/block/{planks}.png"))).convert("RGBA")
+    pix = [p[:3] for p in img.getdata() if p[3] > 0]
+    pix.sort(key=lum)
+    return pix
+
+def recolor(img, palette):
     img = img.convert("RGBA")
     px = img.load()
     w, h = img.size
-    lums = []
-    for y in range(h):
-        for x in range(w):
-            r, g, b, a = px[x, y]
-            if a and max(r, g, b) and (max(r, g, b) - min(r, g, b)) / max(r, g, b) >= 0.18:
-                lums.append(0.299 * r + 0.587 * g + 0.114 * b)
-    ref = sum(lums) / len(lums)
+    wood = []
     for y in range(h):
         for x in range(w):
             r, g, b, a = px[x, y]
@@ -53,14 +58,21 @@ def recolor(img, target):
             mx, mn = max(r, g, b), min(r, g, b)
             if mx and (mx - mn) / mx < 0.18:
                 continue  # Metall (Schloss) unveraendert
-            f = (0.299 * r + 0.587 * g + 0.114 * b) / ref
-            px[x, y] = tuple(min(255, int(c * f)) for c in target) + (a,)
+            wood.append((x, y, a, lum((r, g, b))))
+    vals = sorted(t[3] for t in wood)
+    n = len(vals)
+    for x, y, a, l in wood:
+        lo, hi = bisect.bisect_left(vals, l), bisect.bisect_right(vals, l)
+        rank = (lo + hi) / 2 / n
+        idx = min(len(palette) - 1, int(rank * len(palette)))
+        px[x, y] = tuple(palette[idx]) + (a,)
     return img
 
 zf = zipfile.ZipFile(find_jar())
 en, de = {}, {}
 
-for wid, name_en, name_de, planks, color in WOODS:
+for wid, name_en, name_de, planks in WOODS:
+    palette = planks_palette(planks)
     cid = f"{wid}_chest"
     full = f"{MOD}:{cid}"
     A = f"{ROOT}/assets/{MOD}"
@@ -90,7 +102,7 @@ for wid, name_en, name_de, planks, color in WOODS:
         img = Image.open(io.BytesIO(zf.read(src)))
         out = f"{A}/textures/entity/chest/{wid}{suffix}.png"
         os.makedirs(os.path.dirname(out), exist_ok=True)
-        recolor(img, color).save(out)
+        recolor(img, palette).save(out)
 
 write(f"{ROOT}/assets/{MOD}/lang/en_us.json", en)
 write(f"{ROOT}/assets/{MOD}/lang/de_de.json", de)
