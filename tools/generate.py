@@ -34,22 +34,42 @@ def find_jar():
             return j
     sys.exit("Minecraft-Jar nicht gefunden")
 
-import bisect
-
 def lum(c):
     return 0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]
 
 def planks_palette(planks):
     img = Image.open(io.BytesIO(zf.read(f"assets/minecraft/textures/block/{planks}.png"))).convert("RGBA")
-    pix = [p[:3] for p in img.getdata() if p[3] > 0]
-    pix.sort(key=lum)
-    return pix
+    return img
 
-def recolor(img, palette):
+def otsu(values):
+    hist = [0] * 256
+    for v in values:
+        hist[min(255, int(v))] += 1
+    total = len(values)
+    sum_all = sum(i * h for i, h in enumerate(hist))
+    best, thr, w0, s0 = -1, 0, 0, 0
+    for t in range(256):
+        w0 += hist[t]
+        if w0 == 0:
+            continue
+        w1 = total - w0
+        if w1 == 0:
+            break
+        s0 += t * hist[t]
+        m0 = s0 / w0
+        m1 = (sum_all - s0) / w1
+        var = w0 * w1 * (m0 - m1) ** 2
+        if var > best:
+            best, thr = var, t
+    return thr
+
+def recolor(img, planks):
     img = img.convert("RGBA")
     px = img.load()
     w, h = img.size
-    wood = []
+    pp = planks.load()
+    pw, ph = planks.size
+    cand = []
     for y in range(h):
         for x in range(w):
             r, g, b, a = px[x, y]
@@ -58,14 +78,15 @@ def recolor(img, palette):
             mx, mn = max(r, g, b), min(r, g, b)
             if mx and (mx - mn) / mx < 0.18:
                 continue  # Metall (Schloss) unveraendert
-            wood.append((x, y, a, lum((r, g, b))))
-    vals = sorted(t[3] for t in wood)
-    n = len(vals)
-    for x, y, a, l in wood:
-        lo, hi = bisect.bisect_left(vals, l), bisect.bisect_right(vals, l)
-        rank = (lo + hi) / 2 / n
-        idx = min(len(palette) - 1, int(rank * len(palette)))
-        px[x, y] = tuple(palette[idx]) + (a,)
+            cand.append((x, y, lum((r, g, b))))
+    thr = min(100, otsu([c[2] for c in cand]))
+    wood = [c for c in cand if c[2] > thr]  # dunkle Pixel (Rand, Innenraum) bleiben wie Vanilla
+    ref = sum(c[2] for c in wood) / len(wood)
+    for x, y, l in wood:
+        a = px[x, y][3]
+        base = pp[x % pw, y % ph]
+        f = 1 + (l / ref - 1) * 0.6
+        px[x, y] = tuple(max(0, min(255, int(base[i] * f))) for i in range(3)) + (a,)
     return img
 
 zf = zipfile.ZipFile(find_jar())
