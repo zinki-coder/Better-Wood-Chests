@@ -10,5 +10,6 @@
   "block.better-wood-chests.pale_oak_chest": "Blasseichentruhe",
   "block.better-wood-chests.bamboo_chest": "Bambustruhe",
   "block.better-wood-chests.crimson_chest": "Karmesintruhe",
-  "block.better-wood-chests.warped_chest": "Wirrtruhe"
+  "block.better-wood-chests.warped_chest": "Wirrtruhe",
+  "container.better-wood-chests.large": "Große %s"
 }

@@ -10,5 +10,6 @@
   "block.better-wood-chests.pale_oak_chest": "Pale Oak Chest",
   "block.better-wood-chests.bamboo_chest": "Bamboo Chest",
   "block.better-wood-chests.crimson_chest": "Crimson Chest",
-  "block.better-wood-chests.warped_chest": "Warped Chest"
+  "block.better-wood-chests.warped_chest": "Warped Chest",
+  "container.better-wood-chests.large": "Large %s"
 }

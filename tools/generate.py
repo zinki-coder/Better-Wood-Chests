@@ -125,6 +125,8 @@ for wid, name_en, name_de, planks in WOODS:
         os.makedirs(os.path.dirname(out), exist_ok=True)
         recolor(img, palette).save(out)
 
+en["container.better-wood-chests.large"] = "Large %s"
+de["container.better-wood-chests.large"] = "Große %s"
 write(f"{ROOT}/assets/{MOD}/lang/en_us.json", en)
 write(f"{ROOT}/assets/{MOD}/lang/de_de.json", de)
 write(f"{ROOT}/data/minecraft/tags/block/mineable/axe.json",
