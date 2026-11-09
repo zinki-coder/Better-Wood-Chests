@@ -116,6 +116,15 @@ for wid, name_en, name_de, planks in WOODS:
                                       "include": ["minecraft:custom_name"], "source": "block_entity"}],
                        "name": full}],
           "rolls": 1.0}], "random_sequence": f"{MOD}:blocks/{cid}"})
+    write(f"{D}/advancement/recipes/misc/{cid}.json", {
+        "parent": "minecraft:recipes/root",
+        "criteria": {
+            "has_planks": {"trigger": "minecraft:inventory_changed",
+                           "conditions": {"items": [{"items": f"minecraft:{planks}"}]}},
+            "has_the_recipe": {"trigger": "minecraft:recipe_unlocked",
+                               "conditions": {"recipe": full}}},
+        "requirements": [["has_planks", "has_the_recipe"]],
+        "rewards": {"recipes": [full]}})
     en[f"block.{MOD}.{cid}"] = name_en
     de[f"block.{MOD}.{cid}"] = name_de
     for suffix in ("", "_left", "_right"):
