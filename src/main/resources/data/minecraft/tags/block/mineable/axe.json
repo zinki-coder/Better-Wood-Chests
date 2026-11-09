@@ -11,6 +11,18 @@
     "better-wood-chests:pale_oak_chest",
     "better-wood-chests:bamboo_chest",
     "better-wood-chests:crimson_chest",
-    "better-wood-chests:warped_chest"
+    "better-wood-chests:warped_chest",
+    "better-wood-chests:oak_trapped_chest",
+    "better-wood-chests:spruce_trapped_chest",
+    "better-wood-chests:birch_trapped_chest",
+    "better-wood-chests:jungle_trapped_chest",
+    "better-wood-chests:acacia_trapped_chest",
+    "better-wood-chests:dark_oak_trapped_chest",
+    "better-wood-chests:mangrove_trapped_chest",
+    "better-wood-chests:cherry_trapped_chest",
+    "better-wood-chests:pale_oak_trapped_chest",
+    "better-wood-chests:bamboo_trapped_chest",
+    "better-wood-chests:crimson_trapped_chest",
+    "better-wood-chests:warped_trapped_chest"
   ]
 }

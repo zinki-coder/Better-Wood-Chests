@@ -30,7 +30,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.ChestType;
 import net.minecraft.world.phys.Vec3;
 
-public class WoodChestRenderer implements BlockEntityRenderer<WoodChestBlockEntity, WoodChestRenderState> {
+public class WoodChestRenderer<T extends ChestBlockEntity> implements BlockEntityRenderer<T, WoodChestRenderState> {
     private final SpriteGetter sprites;
     private final MultiblockChestResources<ChestModel> models;
     private final Map<String, MultiblockChestResources<SpriteId>> textures = new HashMap<>();
@@ -56,7 +56,7 @@ public class WoodChestRenderer implements BlockEntityRenderer<WoodChestBlockEnti
 
     @Override
     public void extractRenderState(
-        final WoodChestBlockEntity blockEntity,
+        final T blockEntity,
         final WoodChestRenderState state,
         final float partialTicks,
         final Vec3 cameraPosition,

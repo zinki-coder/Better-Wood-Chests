@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "ingredients": [
+    "better-wood-chests:bamboo_chest",
+    "minecraft:tripwire_hook"
+  ],
+  "result": {
+    "id": "better-wood-chests:bamboo_trapped_chest"
+  }
+}

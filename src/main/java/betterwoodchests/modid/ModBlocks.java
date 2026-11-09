@@ -11,7 +11,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
@@ -24,30 +23,49 @@ public class ModBlocks {
     };
     public static final Map<String, Block> CHESTS = new LinkedHashMap<>();
     public static final Map<String, Item> CHEST_ITEMS = new LinkedHashMap<>();
+    public static final Map<String, Block> TRAPPED_CHESTS = new LinkedHashMap<>();
+    public static final Map<String, Item> TRAPPED_ITEMS = new LinkedHashMap<>();
 
     static {
         for (String wood : WOODS) {
             Identifier id = Identifier.fromNamespaceAndPath(BetterWoodChests.MOD_ID, wood + "_chest");
-            BlockBehaviour.Properties props = BlockBehaviour.Properties.of()
-                .mapColor(MapColor.WOOD)
-                .instrument(NoteBlockInstrument.BASS)
-                .strength(2.5F)
-                .sound(SoundType.WOOD)
-                .setId(ResourceKey.create(Registries.BLOCK, id));
             Block block = Registry.register(BuiltInRegistries.BLOCK, id,
                 new WoodChestBlock(() -> ModBlockEntities.WOOD_CHEST,
-                    SoundEvents.CHEST_OPEN, SoundEvents.CHEST_CLOSE, props));
-            Item item = Registry.register(BuiltInRegistries.ITEM, id,
-                new BlockItem(block, new Item.Properties()
-                    .setId(ResourceKey.create(Registries.ITEM, id))
-                    .useBlockDescriptionPrefix()));
+                    SoundEvents.CHEST_OPEN, SoundEvents.CHEST_CLOSE, props(id)));
             CHESTS.put(wood, block);
-            CHEST_ITEMS.put(wood, item);
+            CHEST_ITEMS.put(wood, item(id, block));
+
+            Identifier tid = Identifier.fromNamespaceAndPath(BetterWoodChests.MOD_ID, wood + "_trapped_chest");
+            Block tblock = Registry.register(BuiltInRegistries.BLOCK, tid,
+                new WoodTrappedChestBlock(() -> ModBlockEntities.WOOD_TRAPPED_CHEST,
+                    SoundEvents.CHEST_OPEN, SoundEvents.CHEST_CLOSE, props(tid)));
+            TRAPPED_CHESTS.put(wood, tblock);
+            TRAPPED_ITEMS.put(wood, item(tid, tblock));
         }
+    }
+
+    private static BlockBehaviour.Properties props(Identifier id) {
+        return BlockBehaviour.Properties.of()
+            .mapColor(MapColor.WOOD)
+            .instrument(NoteBlockInstrument.BASS)
+            .strength(2.5F)
+            .sound(SoundType.WOOD)
+            .setId(ResourceKey.create(Registries.BLOCK, id));
+    }
+
+    private static Item item(Identifier id, Block block) {
+        return Registry.register(BuiltInRegistries.ITEM, id,
+            new BlockItem(block, new Item.Properties()
+                .setId(ResourceKey.create(Registries.ITEM, id))
+                .useBlockDescriptionPrefix()));
     }
 
     public static Block[] chestArray() {
         return CHESTS.values().toArray(new Block[0]);
+    }
+
+    public static Block[] trappedArray() {
+        return TRAPPED_CHESTS.values().toArray(new Block[0]);
     }
 
     public static void init() {}

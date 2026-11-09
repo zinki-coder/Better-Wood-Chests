@@ -3,13 +3,18 @@ package betterwoodchests.modid;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.ChestBlock;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.ChestType;
 
 public class WoodChestBlockEntity extends ChestBlockEntity {
     public WoodChestBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.WOOD_CHEST, pos, state);
+        this(ModBlockEntities.WOOD_CHEST, pos, state);
+    }
+
+    protected WoodChestBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
     }
 
     @Override

@@ -125,6 +125,46 @@ for wid, name_en, name_de, planks in WOODS:
                                "conditions": {"recipe": full}}},
         "requirements": [["has_planks", "has_the_recipe"]],
         "rewards": {"recipes": [full]}})
+    tid = f"{wid}_trapped_chest"
+    tfull = f"{MOD}:{tid}"
+    write(f"{A}/blockstates/{tid}.json", {"variants": {"": {"model": f"{MOD}:block/{tid}"}}})
+    write(f"{A}/models/block/{tid}.json", {"textures": {"particle": f"minecraft:block/{planks}"}})
+    write(f"{A}/models/item/{tid}.json", {"parent": "minecraft:item/template_chest",
+          "textures": {"particle": f"minecraft:block/{planks}"}})
+    write(f"{A}/items/{tid}.json", {"model": {"type": "minecraft:special",
+          "base": f"{MOD}:item/{tid}",
+          "model": {"type": "minecraft:chest", "texture": f"{MOD}:{wid}_trapped"}}})
+    write(f"{D}/recipe/{tid}.json", {"type": "minecraft:crafting_shapeless", "category": "redstone",
+          "ingredients": [full, "minecraft:tripwire_hook"], "result": {"id": tfull}})
+    write(f"{D}/loot_table/blocks/{tid}.json", {"type": "minecraft:block", "pools": [{
+          "bonus_rolls": 0.0,
+          "conditions": [{"condition": "minecraft:survives_explosion"}],
+          "entries": [{"type": "minecraft:item",
+                       "functions": [{"function": "minecraft:copy_components",
+                                      "include": ["minecraft:custom_name"], "source": "block_entity"}],
+                       "name": tfull}],
+          "rolls": 1.0}], "random_sequence": f"{MOD}:blocks/{tid}"})
+    write(f"{D}/advancement/recipes/redstone/{tid}.json", {
+        "parent": "minecraft:recipes/root",
+        "criteria": {
+            "has_chest": {"trigger": "minecraft:inventory_changed",
+                          "conditions": {"items": [{"items": full}]}},
+            "has_the_recipe": {"trigger": "minecraft:recipe_unlocked",
+                               "conditions": {"recipe": tfull}}},
+        "requirements": [["has_chest", "has_the_recipe"]],
+        "rewards": {"recipes": [tfull]}})
+    en[f"block.{MOD}.{tid}"] = name_en.replace(" Chest", "") + " Trapped Chest"
+    de[f"block.{MOD}.{tid}"] = name_de[:-len("truhe")] + "-Redstone-Truhe"
+    for suffix in ("", "_left", "_right"):
+        base = Image.open(io.BytesIO(zf.read(f"assets/minecraft/textures/entity/chest/normal{suffix}.png"))).convert("RGBA")
+        trapped = Image.open(io.BytesIO(zf.read(f"assets/minecraft/textures/entity/chest/trapped{suffix}.png"))).convert("RGBA")
+        woodimg = recolor(base, palette)
+        bp, tp, wp = base.load(), trapped.load(), woodimg.load()
+        for y in range(base.size[1]):
+            for x in range(base.size[0]):
+                if bp[x, y] != tp[x, y]:
+                    wp[x, y] = tp[x, y]
+        woodimg.save(f"{A}/textures/entity/chest/{wid}_trapped{suffix}.png")
     en[f"block.{MOD}.{cid}"] = name_en
     de[f"block.{MOD}.{cid}"] = name_de
     for suffix in ("", "_left", "_right"):
@@ -139,7 +179,7 @@ de["container.better-wood-chests.large"] = "Große %s"
 write(f"{ROOT}/assets/{MOD}/lang/en_us.json", en)
 write(f"{ROOT}/assets/{MOD}/lang/de_de.json", de)
 write(f"{ROOT}/data/minecraft/tags/block/mineable/axe.json",
-      {"values": [f"{MOD}:{w[0]}_chest" for w in WOODS]})
+      {"values": [f"{MOD}:{w[0]}_chest" for w in WOODS] + [f"{MOD}:{w[0]}_trapped_chest" for w in WOODS]})
 # Vanilla-Truhen aus dem Survival-Crafting entfernen
 NEVER = [{"condition": "fabric:all_mods_loaded", "values": ["better-wood-chests-never-installed"]}]
 for vanilla in ("chest", "trapped_chest"):
@@ -149,5 +189,5 @@ for vanilla in ("chest", "trapped_chest"):
         "key": {"#": "minecraft:barrier"}, "pattern": ["###", "# #", "###"],
         "result": {"id": f"minecraft:{vanilla}"}})
 write(f"{ROOT}/data/minecraft/tags/block/guarded_by_piglins.json",
-      {"values": [f"{MOD}:{w[0]}_chest" for w in WOODS]})
+      {"values": [f"{MOD}:{w[0]}_chest" for w in WOODS] + [f"{MOD}:{w[0]}_trapped_chest" for w in WOODS]})
 print("Fertig:", len(WOODS), "Holzarten")

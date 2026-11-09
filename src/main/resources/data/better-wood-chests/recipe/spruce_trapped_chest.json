@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "ingredients": [
+    "better-wood-chests:spruce_chest",
+    "minecraft:tripwire_hook"
+  ],
+  "result": {
+    "id": "better-wood-chests:spruce_trapped_chest"
+  }
+}

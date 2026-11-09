@@ -12,5 +12,10 @@ public class ModBlockEntities {
         Identifier.fromNamespaceAndPath(BetterWoodChests.MOD_ID, "wood_chest"),
         FabricBlockEntityTypeBuilder.create(WoodChestBlockEntity::new, ModBlocks.chestArray()).build());
 
+    public static final BlockEntityType<WoodTrappedChestBlockEntity> WOOD_TRAPPED_CHEST = Registry.register(
+        BuiltInRegistries.BLOCK_ENTITY_TYPE,
+        Identifier.fromNamespaceAndPath(BetterWoodChests.MOD_ID, "wood_trapped_chest"),
+        FabricBlockEntityTypeBuilder.create(WoodTrappedChestBlockEntity::new, ModBlocks.trappedArray()).build());
+
     public static void init() {}
 }

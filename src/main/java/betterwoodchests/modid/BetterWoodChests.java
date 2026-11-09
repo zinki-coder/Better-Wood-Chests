@@ -16,6 +16,8 @@ public class BetterWoodChests implements ModInitializer {
         ModBlockEntities.init();
         CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS)
             .register(entries -> ModBlocks.CHEST_ITEMS.values().forEach(entries::accept));
+        CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.REDSTONE_BLOCKS)
+            .register(entries -> ModBlocks.TRAPPED_ITEMS.values().forEach(entries::accept));
         LOGGER.info("Better Wood Chests loaded");
     }
 }

@@ -1,0 +1,10 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "better-wood-chests:item/spruce_trapped_chest",
+    "model": {
+      "type": "minecraft:chest",
+      "texture": "better-wood-chests:spruce_trapped"
+    }
+  }
+}
