@@ -131,4 +131,14 @@ write(f"{ROOT}/assets/{MOD}/lang/en_us.json", en)
 write(f"{ROOT}/assets/{MOD}/lang/de_de.json", de)
 write(f"{ROOT}/data/minecraft/tags/block/mineable/axe.json",
       {"values": [f"{MOD}:{w[0]}_chest" for w in WOODS]})
+# Vanilla-Truhen aus dem Survival-Crafting entfernen
+NEVER = [{"condition": "fabric:all_mods_loaded", "values": ["better-wood-chests-never-installed"]}]
+for vanilla in ("chest", "trapped_chest"):
+    write(f"{ROOT}/data/minecraft/recipe/{vanilla}.json", {
+        "fabric:load_conditions": NEVER,
+        "type": "minecraft:crafting_shaped", "category": "misc",
+        "key": {"#": "minecraft:barrier"}, "pattern": ["###", "# #", "###"],
+        "result": {"id": f"minecraft:{vanilla}"}})
+write(f"{ROOT}/data/minecraft/tags/block/guarded_by_piglins.json",
+      {"values": [f"{MOD}:{w[0]}_chest" for w in WOODS]})
 print("Fertig:", len(WOODS), "Holzarten")
